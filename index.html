@@ -16,6 +16,10 @@
   <meta property="og:title" content="test_twittercard" />
   <meta property="og:description" content="test_description" />
   <meta property="og:image" content="" />
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <title>Document</title>
 </head>
@@ -26,10 +30,9 @@
     <button type="button" name="button" class="js-trigger">これで決定！</button>
   </div>
   <div>
-    <a class="tw-share-btn" href="https://twiter.com/share?url=">
-      <p>ツイート</p>
-    </a>
+    <a href="https://twitter.com/share?" class="tw-share-button">Tweet</a>
   </div>
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script>
     // const axios = require('axios');
     document.addEventListener('DOMContentLoaded', () => {
@@ -42,45 +45,63 @@
       const sendRequest = () => {
         axios.get('https://api.myjson.com/bins/105ogg')
           .then(function(response) {
+            console.log(response);
             const { url } = response.data;
+            const btn = document.querySelector('.tw-share-button');
+            const baseUrl = btn.getAttribute('href');
+            const text = 'ダミー';
+            const newUrl = 'http://twitter.com/share?text=文言&url=https://yahoo.co.jp';
+            // const newUrl = `${baseUrl}text=${text}&url=${url}`;
+            console.log(typeof newUrl);
+
+            btn.setAttribute('href', newUrl);
 
             // handle success
-            (function() {
-              var d = document;
-              var s = 'script';
-              var id = 'twitter-wjs';
-              var js,
-                fjs = d.getElementsByTagName(s)[0];
-              if (!d.getElementById(id)) {
-                js = d.createElement(s);
-                js.id = id;
-                js.src = 'https://platform.twitter.com/widgets.js';
-                fjs.parentNode.insertBefore(js, fjs);
-              }
-
-              function callAfterTwitterInitialization(callback) {
-                if (typeof twttr !== "undefined") {
-                  callback();
-                } else {
-                  setTimeout(function() {
-                    callAfterTwitterInitialization(callback);
-                  }, 100);
-                }
-              }
-
-              var shareUrl = url;
-              var target = document.querySelector(".tw-share-btn");
-              var message = "ダミーーー";
-
-              callAfterTwitterInitialization(function() {
-                target.innerHTML = '';
-                twttr.widgets.createShareButton(shareUrl, target, {
-                  count: 'none',
-                  text: message,
-                  lang: 'ja'
-                });
-              });
-            }());
+            // (function() {
+            //   var d = document;
+            //   var s = 'script';
+            //   var id = 'twitter-wjs';
+            //   var js,
+            //     fjs = d.getElementsByTagName(s)[0];
+            //   if (!d.getElementById(id)) {
+            //     js = d.createElement(s);
+            //     js.id = id;
+            //     js.src = 'https://platform.twitter.com/widgets.js';
+            //     fjs.parentNode.insertBefore(js, fjs);
+            //   }
+            //
+            //   function callAfterTwitterInitialization(callback) {
+            //     if (typeof twttr !== "undefined") {
+            //       callback();
+            //     } else {
+            //       setTimeout(function() {
+            //         callAfterTwitterInitialization(callback);
+            //       }, 100);
+            //     }
+            //   }
+            //
+            //   var shareUrl = url;
+            //   var $target = $(".tw-share-btn");
+            //   var target = document.querySelector(".tw-share-btn");
+            //   var message = "ダミーーー";
+            //
+            //   callAfterTwitterInitialization(function() {
+            //     target.innerHTML = '';
+            //     twttr.widgets.createShareButton(shareUrl, target, {
+            //       count: 'none',
+            //       text: message,
+            //       lang: 'ja'
+            //     });
+            //   });
+            //   setTimeout(() => {
+            //     console.log($target);
+            //
+            //     $target[0].click(function() {
+            //       console.log('aaaaa');
+            //       e.preventDefault();
+            //     });
+            //   }, 2000);
+            // }());
           })
           .catch(function(error) {
             // handle error
