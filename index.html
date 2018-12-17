@@ -22,6 +22,9 @@
 
 <body>
 
+  <div class="">
+    <button type="button" name="button" class="js-trigger">これで決定！</button>
+  </div>
   <div>
     <a class="tw-share-btn" href="https://twiter.com/share?url=">
       <p>ツイート</p>
@@ -30,54 +33,63 @@
   <script>
     // const axios = require('axios');
     document.addEventListener('DOMContentLoaded', () => {
-      axios.get('https://api.myjson.com/bins/105ogg')
-        .then(function(response) {
-          const { url } = response.data;
-          // handle success
-          (function() {
-            var d = document;
-            var s = 'script';
-            var id = 'twitter-wjs';
-            var js,
-              fjs = d.getElementsByTagName(s)[0];
-            if (!d.getElementById(id)) {
-              js = d.createElement(s);
-              js.id = id;
-              js.src = 'https://platform.twitter.com/widgets.js';
-              fjs.parentNode.insertBefore(js, fjs);
-            }
+      const trigger = document.querySelector('.js-trigger');
 
-            function callAfterTwitterInitialization(callback) {
-              if (typeof twttr !== "undefined") {
-                callback();
-              } else {
-                setTimeout(function() {
-                  callAfterTwitterInitialization(callback);
-                }, 100);
+      trigger.addEventListener('click', () => {
+        sendRequest();
+      });
+
+      const sendRequest = () => {
+        axios.get('https://api.myjson.com/bins/105ogg')
+          .then(function(response) {
+            const { url } = response.data;
+
+            // handle success
+            (function() {
+              var d = document;
+              var s = 'script';
+              var id = 'twitter-wjs';
+              var js,
+                fjs = d.getElementsByTagName(s)[0];
+              if (!d.getElementById(id)) {
+                js = d.createElement(s);
+                js.id = id;
+                js.src = 'https://platform.twitter.com/widgets.js';
+                fjs.parentNode.insertBefore(js, fjs);
               }
-            }
 
-            var shareUrl = url;
-            var target = ".tw-share-btn";
-            var message = "ダミーーー";
+              function callAfterTwitterInitialization(callback) {
+                if (typeof twttr !== "undefined") {
+                  callback();
+                } else {
+                  setTimeout(function() {
+                    callAfterTwitterInitialization(callback);
+                  }, 100);
+                }
+              }
 
-            callAfterTwitterInitialization(function() {
-              $(target).empty();
-              twttr.widgets.createShareButton(shareUrl, document.querySelector(target), {
-                count: 'none',
-                text: message,
-                lang: 'ja'
+              var shareUrl = url;
+              var target = document.querySelector(".tw-share-btn");
+              var message = "ダミーーー";
+
+              callAfterTwitterInitialization(function() {
+                target.innerHTML = '';
+                twttr.widgets.createShareButton(shareUrl, target, {
+                  count: 'none',
+                  text: message,
+                  lang: 'ja'
+                });
               });
-            });
-          }());
-        })
-        .catch(function(error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function() {
-          // always executed
-        });
+            }());
+          })
+          .catch(function(error) {
+            // handle error
+            console.log(error);
+          })
+          .then(function() {
+            // always executed
+          });
+      };
     });
   </script>
 </body>
